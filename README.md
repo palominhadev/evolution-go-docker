@@ -58,17 +58,14 @@ Para que a aplicação funcione corretamente, certifique-se de que o seu arquivo
 `SERVER_URL=http://localhost:8080`
 
 `# Conexão com o Banco de Dados (Apontando para o container 'postgres')`  
-`DATABASE_CONNECTION_URI=postgres://usuario:senha@postgres:5432/nome_do_banco?sslmode=disable`
+`DATABASE_CONNECTION_URI=postgres://usuario:senha@container-postgres:5432/nome_do_banco?sslmode=disable`
 
 `# Configuração do NATS (Apontando para o container 'nats-server')`  
 `NATS_URL=nats://nats-server:4222`
+`NATS_URI=nats://nats-server:4222`
 
-`# --- AUTENTICAÇÃO E SEGURANÇA ---`
+`# AUTENTICAÇÃO E SEGURANÇA`
 `GLOBAL_API_KEY=suachaveseguraAQUI`
-
-`# --- SISTEMA DE EVENTOS NATS`
-`NATS_URL=nats://nats-server:4222`
-`NATS_URI==nats://nats-server:4222`
 
 ## **💡 Informações Adicionais e Boas Práticas**
 
