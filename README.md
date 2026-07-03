@@ -53,18 +53,18 @@ evoapicloud/evolution-go:latest
 
 Para que a aplicação funcione corretamente, certifique-se de que o seu arquivo .env contenha as strings de conexão apontando para os nomes dos containers dentro da rede Docker (postgres e nats-server funcionam como hostnames graças à rede compartilhada):  
 
-# Configurações do Servidor
+#### Configurações do Servidor
 `SERVER_PORT=8080`  
 `SERVER_URL=http://localhost:8080`
 
-# Conexão com o Banco de Dados (Apontando para o container 'postgres')
+#### Conexão com o Banco de Dados (Apontando para o container 'postgres')
 `DATABASE_CONNECTION_URI=postgres://usuario:senha@container-postgres:5432/nome_do_banco?sslmode=disable`
 
-# Configuração do NATS (Apontando para o container 'nats-server')
+#### Configuração do NATS (Apontando para o container 'nats-server')
 `NATS_URL=nats://nats-server:4222`
 `NATS_URI=nats://nats-server:4222`
 
-# AUTENTICAÇÃO E SEGURANÇA
+#### AUTENTICAÇÃO E SEGURANÇA (Obrigatório)
 `GLOBAL_API_KEY=suachaveseguraAQUI`
 
 ## **💡 Informações Adicionais e Boas Práticas**
