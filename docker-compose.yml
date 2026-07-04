@@ -1,17 +1,52 @@
 services:
+  # PostgreSQL
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    platform: linux/amd64
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - $HOME/dev/docker/volumes/postgres:/var/lib/postgresql
+    networks:
+      - evolution-net
+    env_file:
+      - .env
 
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    platform: linux/amd64
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - $HOME/dev/docker/volumes/redis:/data
+    networks:
+      - evolution-net
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+
+  # NATS Server
   nats-server:
     image: nats:latest
     container_name: nats-server
     platform: linux/amd64
     ports:
       - "4222:4222"
+      - "8222:8222"
     restart: unless-stopped
     networks:
       - evolution-net
     env_file:
       - .env
 
+  # Evolution API
   evolution:
     image: evoapicloud/evolution-go:latest
     container_name: evolution
@@ -19,13 +54,19 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    depends_on:
+      - postgres
+      - nats-server
+      - redis
     volumes:
       - $HOME/dev/docker/volumes/evo-go/instances:/app/instances
+      - $HOME/dev/docker/volumes/evo-go/credentials:/app/credentials
     networks:
       - evolution-net
     env_file:
       - .env
 
+  # n8n
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
     container_name: n8n
@@ -33,6 +74,8 @@ services:
     ports:
       - "5678:5678"
     restart: unless-stopped
+    depends_on:
+      - postgres
     networks:
       - evolution-net
     env_file:

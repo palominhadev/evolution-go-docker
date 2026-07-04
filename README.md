@@ -10,11 +10,38 @@ Este guia fornece o passo a passo completo para implantar a **Evolution API (Ver
 
 ## **🛠️ Pré-requisitos**
 
-* Docker instalado e em execução no sistema operacional.  
-* Um container PostgreSQL ativo e nomeado como postgres.  
+* Docker instalado e em execução no sistema operacional.
+* Docker Compose (versão 2.0 ou superior).
 * Um arquivo .env configurado no mesmo diretório onde os comandos serão executados.
+* Portas disponíveis: Verifique se as portas definidas no docker-compose.yml estão livres.
 
-## **🚀 Passo a Passo da Implantação**
+## **🚀 Guia de Implantação com Docker Compose**
+
+* Clone este repositório
+
+```bash
+git clone https://github.com/palominhadev/evolution-go-docker
+```
+
+* Inicie os containers em modo detached (background).
+
+```bash
+docker compose up -d
+```
+
+* Verifique se todos os serviços estão rodando.
+
+```bash
+docker compose ps
+```
+
+* Acompanhe os logs (opcional)
+
+```bash
+docker compose logs -f
+```
+
+## **🚀 Passo a Passo da Implantação Manual**
 
 ### **1\. Criar uma Rede Docker Dedicada**
 
@@ -43,29 +70,11 @@ docker container run -d --name nats-server --network rede-evolution \
 Agora, iniciamos a Evolution API passando o arquivo de variáveis de ambiente (--env-file) e mapeando um volume persistente (-v) para garantir que as sessões e QR Codes do WhatsApp não sejam perdidos ao reiniciar o container.
 
 ```bash
-docker container run -it -p 8080:8080 --name evolution_api \
+docker container run -it -p 8080:8080 --name evolution-go \
 --restart unless-stopped --network rede-evolution \
 --env-file .env -v evolution_go_instances:/app/instances \
 evoapicloud/evolution-go:latest
 ```
-
-## **⚙️ Configuração do Arquivo .env**
-
-Para que a aplicação funcione corretamente, certifique-se de que o seu arquivo .env contenha as strings de conexão apontando para os nomes dos containers dentro da rede Docker (postgres e nats-server funcionam como hostnames graças à rede compartilhada):  
-
-#### Configurações do Servidor
-`SERVER_PORT=8080`
-`SERVER_URL=http://localhost:8080`
-
-#### Conexão com o Banco de Dados (Apontando para o container 'postgres')
-`DATABASE_CONNECTION_URI=postgres://usuario:senha@postgres:5432/nome_do_banco?sslmode=disable`
-
-#### Configuração do NATS (Apontando para o container 'nats-server')
-`NATS_URL=nats://nats-server:4222`
-`NATS_URI=nats://nats-server:4222`
-
-#### AUTENTICAÇÃO E SEGURANÇA (Obrigatório)
-`GLOBAL_API_KEY=suachaveseguraAQUI`
 
 ## **💡 Informações Adicionais e Boas Práticas**
 
@@ -73,7 +82,7 @@ Para que a aplicação funcione corretamente, certifique-se de que o seu arquivo
 * **Logs da API:** Caso queira rodar a API em segundo plano (liberando o terminal), substitua o parâmetro \-it por \-d no comando do passo 4\. Para visualizar os logs posteriormente, utilize:
 
 ```bash
-docker logs -f evolution_api
+docker logs -f evolution-go
 ```
 
 ## **❓ Dúvidas e Documentação Oficial**
