@@ -1,4 +1,20 @@
 services:
+
+  # use only in development
+  ngrok:
+    image: ngrok/ngrok:alpine
+    container_name: ngrok
+    ports:
+      - "4040:4040"
+    restart: unless-stopped
+    env_file:
+      - .env.docker.dev
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN_EVO}
+    command: http --url=${NGROK_CUSTOM_URL} evolution:3000
+    networks:
+      - evolution-net
+
   # PostgreSQL
   postgres:
     image: postgres:alpine
@@ -24,7 +40,7 @@ services:
     container_name: redis
     platform: linux/amd64
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     restart: unless-stopped
     volumes:
       - $HOME/dev/docker/volumes/redis:/data
